@@ -1,0 +1,114 @@
+.player {
+  background: #fff;
+  width: min(950px, 100%);
+  padding: 14px 24px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+
+.song-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.song-info img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.song-info h4 {
+  font-size: 14px;
+}
+
+.song-info p {
+  font-size: 11px;
+  color: #777;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  align-items: center;
+}
+
+.play {
+  font-size: 22px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.time {
+  font-size: 11px;
+  width: 35px;
+  text-align: center;
+  color: #777;
+}
+
+.bar {
+  flex: 1;
+  height: 4px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 30%;
+  background: #e10600;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.volume {
+  width: 90px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.volume-fill {
+  width: 70%;
+  height: 100%;
+  background: #e10600;
+}
+
+
+
+
+body.dark {
+  background: #121212;
+}
+
+.dark .player {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.dark .time,
+.dark p {
+  color: #aaa;
+}
