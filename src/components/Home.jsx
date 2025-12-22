@@ -4,43 +4,16 @@ import { supabase } from "../services/supabase";
 import Player from "../components/Player";
 
 const albums = [
-  {
-    title: "Starboy",
-    artist: "The Weeknd",
-    img: "https://picsum.photos/600?1",
-    type: "chill",
-    desc: "Smooth vibes to relax and unwind."
-  },
-  {
-    title: "Fame",
-    artist: "Ariana Grande",
-    img: "https://picsum.photos/600?2",
-    type: "romantic",
-    desc: "Love, emotions and soft melodies."
-  },
-  {
-    title: "To Pimp a Butterfly",
-    artist: "Kendrick Lamar",
-    img: "https://picsum.photos/600?3",
-    type: "workout",
-    desc: "High energy tracks to keep you moving."
-  },
-  {
-    title: "Cowboy Carter",
-    artist: "Beyonce",
-    img: "https://picsum.photos/600?4",
-    type: "90s",
-    desc: "Classic nostalgia from the golden era."
-  }
+  { title: "Starboy", artist: "The Weeknd", img: "https://picsum.photos/600?1", type: "chill", desc: "Smooth vibes to relax and unwind." },
+  { title: "Fame", artist: "Ariana Grande", img: "https://picsum.photos/600?2", type: "romantic", desc: "Love, emotions and soft melodies." },
+  { title: "To Pimp a Butterfly", artist: "Kendrick Lamar", img: "https://picsum.photos/600?3", type: "workout", desc: "High energy tracks to keep you moving." },
+  { title: "Cowboy Carter", artist: "Beyonce", img: "https://picsum.photos/600?4", type: "90s", desc: "Classic nostalgia from the golden era." }
 ];
 
 function Home() {
   const [selectedAlbum, setSelectedAlbum] = useState(albums[0]);
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // 🔑 one-time autoplay trigger (album switch / song click)
-  const [autoPlayTrigger, setAutoPlayTrigger] = useState(false);
 
   /* ===== FETCH SONGS BY TYPE ===== */
   useEffect(() => {
@@ -52,33 +25,19 @@ function Home() {
         .order("id");
 
       setSongs(data || []);
+      // Reset to first song of the new category
+      setCurrentIndex(0);
     };
 
     fetchSongs();
   }, [selectedAlbum]);
 
-  /* ===== PLAY FIRST SONG ONLY AFTER ALBUM SWITCH ===== */
-  useEffect(() => {
-    if (songs.length && autoPlayTrigger) {
-      setCurrentIndex(0);
-
-      // reset trigger immediately (important)
-      setTimeout(() => {
-        setAutoPlayTrigger(false);
-      }, 0);
-    }
-  }, [songs]);
-
-  /* ===== ALBUM CHANGE ===== */
   const handleAlbumChange = (album) => {
     setSelectedAlbum(album);
-    setAutoPlayTrigger(true);
   };
 
   return (
     <div className="home">
-
-      {/* ================= HERO ================= */}
       <div className="hero-wrapper">
         <div className="hero">
           <div className="hero-content">
@@ -86,62 +45,46 @@ function Home() {
             <h1>{selectedAlbum.title}</h1>
             <p>{selectedAlbum.desc}</p>
           </div>
-
-          <img
-            className="hero-img"
-            src={selectedAlbum.img}
-            alt={selectedAlbum.title}
-          />
+          <img className="hero-img" src={selectedAlbum.img} alt={selectedAlbum.title} />
         </div>
 
-        {/* ================= SONG LIST ================= */}
         <div className="hero-songs">
           {songs.map((song, i) => (
             <div
-              className="song-row"
+              className={`song-row ${currentIndex === i ? "playing" : ""}`}
               key={song.id}
-              onClick={() => {
-                setCurrentIndex(i);
-                setAutoPlayTrigger(true);
-              }}
+              onClick={() => setCurrentIndex(i)}
             >
               <img src={song.cover_url} alt={song.title} />
-
               <div className="song-text">
                 <h4>{song.title}</h4>
                 <p>{song.artist}</p>
               </div>
-
               <span className="song-arrow">›</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ================= ALBUM SWITCHER ================= */}
       <div className="albums">
         {albums.map((a, i) => (
           <div
             key={i}
-            className={`album ${
-              a.title === selectedAlbum.title ? "active" : ""
-            }`}
+            className={`album ${a.title === selectedAlbum.title ? "active" : ""}`}
             onClick={() => handleAlbumChange(a)}
           >
-            <img src={a.img} />
+            <img src={a.img} alt={a.title} />
             <h4>{a.title}</h4>
             <p>{a.artist}</p>
           </div>
         ))}
       </div>
 
-      {/* ================= PLAYER ================= */}
       {songs.length > 0 && (
         <Player
           songs={songs}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-          autoPlay={autoPlayTrigger}
         />
       )}
     </div>
