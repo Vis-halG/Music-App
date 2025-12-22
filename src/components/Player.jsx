@@ -102,8 +102,7 @@ function Player() {
       </div>
 
       {/* CENTER */}
-      <div className="center">
-        <div className="controls">
+       <div className="controls">
           <FaBackward onClick={prevSong} />
           {isPlaying ? (
             <FaPause className="play" onClick={togglePlay} />
@@ -112,6 +111,8 @@ function Player() {
           )}
           <FaForward onClick={nextSong} />
         </div>
+      <div className="center">
+       
 
         <div className="progress">
           <span className="time">{format(current)}</span>
@@ -127,20 +128,21 @@ function Player() {
         </div>
       </div>
 
-      {/* RIGHT */}
-      <div className="right">
-        {volume > 0 ? <FaVolumeUp /> : <FaVolumeMute />}
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={handleVolume}
-        />
-        <FaHeart />
-        <FaMoon />
-      </div>
+     {/* RIGHT */}
+<div className="right">
+  {volume > 0 ? <FaVolumeUp /> : <FaVolumeMute />}
+  <input
+    className="volume-range"
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    value={volume}
+    onChange={handleVolume}
+  />
+  <FaHeart />
+</div>
+
     </div>
   );
 }
