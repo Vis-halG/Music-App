@@ -1,8 +1,8 @@
 /* ===== PLAYER WRAPPER ===== */
 .player {
-  margin: 0 5vw;
+  
   background: #fff;
-  width:90%;
+  /* width:100%; */
   padding: 8px 12px;
   border-radius: 999px;
   display: flex;

@@ -39,6 +39,9 @@ function Home() {
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // 🔑 one-time autoplay trigger (album switch / song click)
+  const [autoPlayTrigger, setAutoPlayTrigger] = useState(false);
+
   /* ===== FETCH SONGS BY TYPE ===== */
   useEffect(() => {
     const fetchSongs = async () => {
@@ -54,49 +57,76 @@ function Home() {
     fetchSongs();
   }, [selectedAlbum]);
 
-  /* ===== AUTO PLAY FIRST SONG ===== */
+  /* ===== PLAY FIRST SONG ONLY AFTER ALBUM SWITCH ===== */
   useEffect(() => {
-    if (songs.length) {
+    if (songs.length && autoPlayTrigger) {
       setCurrentIndex(0);
+
+      // reset trigger immediately (important)
+      setTimeout(() => {
+        setAutoPlayTrigger(false);
+      }, 0);
     }
   }, [songs]);
+
+  /* ===== ALBUM CHANGE ===== */
+  const handleAlbumChange = (album) => {
+    setSelectedAlbum(album);
+    setAutoPlayTrigger(true);
+  };
 
   return (
     <div className="home">
 
-      {/* ===== HERO ===== */}
-      <div className="hero">
-        <div className="hero-content">
-          <span className="badge">🔥 {selectedAlbum.type}</span>
-          <h1>{selectedAlbum.title}</h1>
-          <p>{selectedAlbum.desc}</p>
+      {/* ================= HERO ================= */}
+      <div className="hero-wrapper">
+        <div className="hero">
+          <div className="hero-content">
+            <span className="badge">🔥 {selectedAlbum.type}</span>
+            <h1>{selectedAlbum.title}</h1>
+            <p>{selectedAlbum.desc}</p>
+          </div>
+
+          <img
+            className="hero-img"
+            src={selectedAlbum.img}
+            alt={selectedAlbum.title}
+          />
         </div>
 
-        <img className="hero-img" src={selectedAlbum.img} alt="album" />
-
-        {/* ===== SONGS INSIDE HERO ===== */}
+        {/* ================= SONG LIST ================= */}
         <div className="hero-songs">
           {songs.map((song, i) => (
             <div
-              className="song-card"
+              className="song-row"
               key={song.id}
-              onClick={() => setCurrentIndex(i)}
+              onClick={() => {
+                setCurrentIndex(i);
+                setAutoPlayTrigger(true);
+              }}
             >
-              <img src={song.cover_url} />
-              <h4>{song.title}</h4>
-              <p>{song.artist}</p>
+              <img src={song.cover_url} alt={song.title} />
+
+              <div className="song-text">
+                <h4>{song.title}</h4>
+                <p>{song.artist}</p>
+              </div>
+
+              <span className="song-arrow">›</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ===== ALBUM SWITCHER ===== */}
+      {/* ================= ALBUM SWITCHER ================= */}
       <div className="albums">
         {albums.map((a, i) => (
           <div
-            className={`album ${a.title === selectedAlbum.title ? "active" : ""}`}
             key={i}
-            onClick={() => setSelectedAlbum(a)}
+            className={`album ${
+              a.title === selectedAlbum.title ? "active" : ""
+            }`}
+            onClick={() => handleAlbumChange(a)}
           >
             <img src={a.img} />
             <h4>{a.title}</h4>
@@ -105,13 +135,13 @@ function Home() {
         ))}
       </div>
 
-      {/* ===== PLAYER ===== */}
+      {/* ================= PLAYER ================= */}
       {songs.length > 0 && (
         <Player
           songs={songs}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-          autoPlay
+          autoPlay={autoPlayTrigger}
         />
       )}
     </div>

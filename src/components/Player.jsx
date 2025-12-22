@@ -1,96 +1,99 @@
 import { useRef, useState, useEffect } from "react";
 import "./player.css";
-import { supabase } from "../services/supabase";
 import {
   FaPlay,
   FaPause,
   FaForward,
   FaBackward,
   FaHeart,
-  FaMoon,
   FaVolumeUp,
   FaVolumeMute
 } from "react-icons/fa";
 
-function Player() {
+function Player({ songs, currentIndex, setCurrentIndex, autoPlay }) {
   const audioRef = useRef(null);
+  const preloadRef = useRef(null);
 
-  const [songs, setSongs] = useState([]);
-  const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
-  const [loading, setLoading] = useState(true);
 
-  /* ================= FETCH SONGS FROM SUPABASE ================= */
+  const song = songs[currentIndex];
+  const nextSong = songs[(currentIndex + 1) % songs.length];
+
+  /* ===== LOAD + PLAY SONG (SAFE AUTOPLAY) ===== */
   useEffect(() => {
-    const fetchSongs = async () => {
-      const { data, error } = await supabase
-        .from("songs")
-        .select("*")
-        .order("id", { ascending: true });
+    if (!audioRef.current || !song) return;
 
-      if (!error) {
-        setSongs(data);
+    audioRef.current.src = song.audio_url;
+    audioRef.current.currentTime = 0;
+    audioRef.current.volume = volume;
+    setCurrent(0);
+
+    if (autoPlay) {
+      const p = audioRef.current.play();
+      if (p !== undefined) {
+        p.then(() => setIsPlaying(true)).catch(() => {});
       }
+    } else {
+      setIsPlaying(false);
+    }
+  }, [currentIndex]);
 
-      setLoading(false);
-    };
+  /* ===== PRELOAD NEXT SONG ===== */
+  useEffect(() => {
+    if (!preloadRef.current || !nextSong) return;
+    preloadRef.current.src = nextSong.audio_url;
+  }, [nextSong]);
 
-    fetchSongs();
-  }, []);
-
-  if (loading) return <p style={{ textAlign: "center" }}>Loading songs...</p>;
-  if (!songs.length) return <p style={{ textAlign: "center" }}>No songs found</p>;
-
-  const song = songs[index];
-
-  /* ================= PLAY / PAUSE ================= */
+  /* ===== CONTROLS ===== */
   const togglePlay = () => {
     if (!audioRef.current) return;
-    isPlaying ? audioRef.current.pause() : audioRef.current.play();
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+
     setIsPlaying(!isPlaying);
   };
 
-  /* ================= NEXT / PREV ================= */
-  const nextSong = () => {
-    setIndex((i) => (i + 1) % songs.length);
-    setCurrent(0);
-    setIsPlaying(true);
+  const next = () => {
+    setCurrentIndex((i) => (i + 1) % songs.length);
   };
 
-  const prevSong = () => {
-    setIndex((i) => (i - 1 + songs.length) % songs.length);
-    setCurrent(0);
-    setIsPlaying(true);
+  const prev = () => {
+    setCurrentIndex((i) => (i - 1 + songs.length) % songs.length);
   };
 
-  /* ================= VOLUME ================= */
   const handleVolume = (e) => {
     const v = Number(e.target.value);
     audioRef.current.volume = v;
     setVolume(v);
   };
 
-  /* ================= TIME FORMAT ================= */
   const format = (t = 0) => {
     const m = Math.floor(t / 60);
     const s = Math.floor(t % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
+  if (!song) return null;
+
   return (
     <div className="player">
-      {/* AUDIO */}
+      {/* MAIN AUDIO */}
       <audio
         ref={audioRef}
-        src={song.audio_url}
-        autoPlay={isPlaying}
         onTimeUpdate={() => setCurrent(audioRef.current.currentTime)}
         onLoadedMetadata={() => setDuration(audioRef.current.duration)}
-        onEnded={nextSong}
+        onEnded={next}
       />
+
+      {/* PRELOAD AUDIO */}
+      <audio ref={preloadRef} preload="auto" />
 
       {/* LEFT */}
       <div className="song-info">
@@ -102,17 +105,16 @@ function Player() {
       </div>
 
       {/* CENTER */}
-       <div className="controls">
-          <FaBackward onClick={prevSong} />
+      <div className="center">
+        <div className="controls">
+          <FaBackward onClick={prev} />
           {isPlaying ? (
             <FaPause className="play" onClick={togglePlay} />
           ) : (
             <FaPlay className="play" onClick={togglePlay} />
           )}
-          <FaForward onClick={nextSong} />
+          <FaForward onClick={next} />
         </div>
-      <div className="center">
-       
 
         <div className="progress">
           <span className="time">{format(current)}</span>
@@ -120,7 +122,9 @@ function Player() {
             <div
               className="fill"
               style={{
-                width: duration ? `${(current / duration) * 100}%` : "0%"
+                width: duration
+                  ? `${(current / duration) * 100}%`
+                  : "0%"
               }}
             />
           </div>
@@ -128,21 +132,20 @@ function Player() {
         </div>
       </div>
 
-     {/* RIGHT */}
-<div className="right">
-  {volume > 0 ? <FaVolumeUp /> : <FaVolumeMute />}
-  <input
-    className="volume-range"
-    type="range"
-    min="0"
-    max="1"
-    step="0.01"
-    value={volume}
-    onChange={handleVolume}
-  />
-  <FaHeart />
-</div>
-
+      {/* RIGHT */}
+      <div className="right">
+        {volume > 0 ? <FaVolumeUp /> : <FaVolumeMute />}
+        <input
+          className="volume-range"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={handleVolume}
+        />
+        <FaHeart />
+      </div>
     </div>
   );
 }
