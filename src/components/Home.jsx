@@ -6,7 +6,7 @@ import Player from "../components/Player";
 const albums = [
   { title: "Starboy", artist: "The Weeknd", img: "https://picsum.photos/600?1", type: "chill", desc: "Smooth vibes to relax and unwind." },
   { title: "Fame", artist: "Ariana Grande", img: "https://picsum.photos/600?2", type: "romantic", desc: "Love, emotions and soft melodies." },
-  { title: "To Pimp a Butterfly", artist: "Kendrick Lamar", img: "https://picsum.photos/600?3", type: "workout", desc: "High energy tracks to keep you moving." },
+  { title: "To Pimp a Butterfly", artist: "Kendrick Lamar", img: "https://picsum.photos/600?3", type: "feel good", desc: "High energy tracks to keep you moving." },
   { title: "Cowboy Carter", artist: "Beyonce", img: "https://picsum.photos/600?4", type: "90s", desc: "Classic nostalgia from the golden era." }
 ];
 
@@ -15,7 +15,7 @@ function Home() {
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  /* ===== FETCH SONGS BY TYPE ===== */
+  /* ===== FETCH SONGS ===== */
   useEffect(() => {
     const fetchSongs = async () => {
       const { data } = await supabase
@@ -25,16 +25,11 @@ function Home() {
         .order("id");
 
       setSongs(data || []);
-      // Reset to first song of the new category
-      setCurrentIndex(0);
+      setCurrentIndex(0); // Album badalne par pehla gaana set karein
     };
 
     fetchSongs();
   }, [selectedAlbum]);
-
-  const handleAlbumChange = (album) => {
-    setSelectedAlbum(album);
-  };
 
   return (
     <div className="home">
@@ -51,7 +46,7 @@ function Home() {
         <div className="hero-songs">
           {songs.map((song, i) => (
             <div
-              className={`song-row ${currentIndex === i ? "playing" : ""}`}
+              className={`song-row ${currentIndex === i ? "active-song" : ""}`}
               key={song.id}
               onClick={() => setCurrentIndex(i)}
             >
@@ -71,7 +66,7 @@ function Home() {
           <div
             key={i}
             className={`album ${a.title === selectedAlbum.title ? "active" : ""}`}
-            onClick={() => handleAlbumChange(a)}
+            onClick={() => setSelectedAlbum(a)}
           >
             <img src={a.img} alt={a.title} />
             <h4>{a.title}</h4>

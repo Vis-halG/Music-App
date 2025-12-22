@@ -16,48 +16,34 @@ function Player({ songs, currentIndex, setCurrentIndex }) {
   const song = songs[currentIndex];
   const nextSong = songs[(currentIndex + 1) % songs.length];
 
-  /* ===== LOAD + AUTO-PLAY ON SONG CHANGE ===== */
+  /* ===== AUTO-PLAY ON SONG CHANGE ===== */
   useEffect(() => {
     if (!audioRef.current || !song) return;
 
-    // Update source and metadata
     audioRef.current.src = song.audio_url;
-    audioRef.current.load(); // Forces the browser to load the new source
+    audioRef.current.load();
     audioRef.current.currentTime = 0;
     setCurrent(0);
 
-    // Attempt to play immediately
     const playPromise = audioRef.current.play();
-
     if (playPromise !== undefined) {
       playPromise
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch((error) => {
-          // This happens if the user hasn't interacted with the page yet (Browser policy)
-          console.log("Autoplay blocked/waiting for user interaction", error);
-          setIsPlaying(false);
-        });
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
     }
-  }, [song?.id]); // 👈 This ensures it runs whenever the song actually changes
+  }, [song?.id]); // Song ID badalne par automatic chalega
 
-  /* ===== PRELOAD NEXT SONG ===== */
-  useEffect(() => {
-    if (!preloadRef.current || !nextSong) return;
-    preloadRef.current.src = nextSong.audio_url;
-  }, [nextSong]);
+  /* ===== SEEKING (Aage Pichhe Karna) ===== */
+  const handleSeek = (e) => {
+    const time = Number(e.target.value);
+    audioRef.current.currentTime = time;
+    setCurrent(time);
+  };
 
-  /* ===== CONTROLS ===== */
   const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+    if (isPlaying) audioRef.current.pause();
+    else audioRef.current.play();
+    setIsPlaying(!isPlaying);
   };
 
   const next = () => setCurrentIndex((i) => (i + 1) % songs.length);
@@ -65,7 +51,7 @@ function Player({ songs, currentIndex, setCurrentIndex }) {
 
   const handleVolume = (e) => {
     const v = Number(e.target.value);
-    if (audioRef.current) audioRef.current.volume = v;
+    audioRef.current.volume = v;
     setVolume(v);
   };
 
@@ -94,24 +80,26 @@ function Player({ songs, currentIndex, setCurrentIndex }) {
           <p>{song.artist}</p>
         </div>
       </div>
-
-      <div className="center">
-        <div className="controls">
+<div className="controls">
           <FaBackward onClick={prev} className="btn" />
           <div className="play-wrapper" onClick={togglePlay}>
             {isPlaying ? <FaPause className="play" /> : <FaPlay className="play" />}
           </div>
           <FaForward onClick={next} className="btn" />
         </div>
+      <div className="center">
+        
 
         <div className="progress">
           <span className="time">{format(current)}</span>
-          <div className="bar">
-            <div
-              className="fill"
-              style={{ width: duration ? `${(current / duration) * 100}%` : "0%" }}
-            />
-          </div>
+          <input
+            type="range"
+            className="seek-bar"
+            min="0"
+            max={duration || 0}
+            value={current}
+            onChange={handleSeek}
+          />
           <span className="time">{format(duration)}</span>
         </div>
       </div>

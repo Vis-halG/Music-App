@@ -1,23 +1,27 @@
 /* ===== PLAYER WRAPPER ===== */
 .player {
-  
   background: #fff;
-  /* width:100%; */
   padding: 8px 12px;
   border-radius: 999px;
   display: flex;
   align-items: center;
   gap: 40px;
   box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1000px;
 }
 
 /* ===== LEFT ===== */
 .song-info {
   display: flex;
   align-items: center;
-  line-height: 0;
+  line-height: 1.2;
   gap: 12px;
-  /* min-width: 230px; */
+  min-width: 180px;
 }
 
 .song-info img {
@@ -29,12 +33,13 @@
 
 .song-info h4 {
   font-size: 14px;
-  font-weight: 600;
+  margin: 0;
 }
 
 .song-info p {
   font-size: 11px;
   color: #777;
+  margin: 0;
 }
 
 /* ===== CENTER ===== */
@@ -52,16 +57,18 @@
   gap: 22px;
 }
 
-.controls svg {
+.controls .btn {
   cursor: pointer;
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
 .play {
-  font-size: 22px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #e10600;
 }
 
-/* ===== PROGRESS ===== */
+/* ===== SEEK BAR ===== */
 .progress {
   display: flex;
   align-items: center;
@@ -71,21 +78,14 @@
 .time {
   font-size: 11px;
   color: #777;
-  width: 34px;
-  text-align: center;
+  width: 35px;
 }
 
-.bar {
+.seek-bar {
   flex: 1;
   height: 4px;
-  background: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  background: #e10600;
+  cursor: pointer;
+  accent-color: #e10600;
 }
 
 /* ===== RIGHT ===== */
@@ -96,66 +96,23 @@
 }
 
 .volume-range {
-  width: 90px;
-  height: 4px;
+  width: 80px;
   accent-color: #e10600;
+  cursor: pointer;
 }
 
-/* ================= MOBILE UI ================= */
+.heart-icon {
+  color: #ddd;
+  cursor: pointer;
+}
+
+/* ===== MOBILE ===== */
 @media (max-width: 600px) {
-
-  .player {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 18px;
-    gap: 12px;
-  }
-
-  /* HIDE CENTER CONTROLS */
-  .center {
-    display: none;
-  }
-
-  .song-info {
-    min-width: auto;
-    flex: 1;
-  }
-
-  .song-info img {
-    width: 42px;
-    height: 42px;
-  }
-
-  /* MOBILE CONTROLS (RIGHT SIDE) */
-  .right {
-    gap: 16px;
-  }
-
-  .volume-range {
-    display: none;
-  }
-
-  .controls-mobile {
-    display: flex;
-    gap: 14px;
-  }
+  .player { gap: 10px; border-radius: 15px; }
+  .center { display: none; }
+  .volume-range { display: none; }
 }
 
-/* ===== DARK MODE SUPPORT ===== */
-body.dark {
-  background: #121212;
-}
-
-.dark .player {
-  background: #1e1e1e;
-  color: #fff;
-}
-
-.dark .bar {
-  background: #333;
-}
-
-.dark .time,
-.dark p {
-  color: #aaa;
-}
+/* ===== DARK MODE ===== */
+.dark .player { background: #1e1e1e; color: white; }
+.dark .time { color: #aaa; }
