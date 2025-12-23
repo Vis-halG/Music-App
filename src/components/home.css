@@ -58,13 +58,13 @@
 
 /* ================= SONG LIST (2 COLUMN + SCROLL) ================= */
 .hero-songs {
-  width: 380px;
+  width: 500px;
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
 
-  max-height: 260px;      /* 3 rows visible = 6 songs */
+  max-height: 305px;      /* 3 rows visible = 6 songs */
   overflow-y: auto;
   padding-right: 6px;
 }
@@ -82,7 +82,7 @@
 /* ================= SONG ROW ================= */
 .song-row {
   background: rgba(0, 0, 0, 0.05);
-  padding: 12px;
+  padding: 0 10px;
   border-radius: 14px;
 
   display: flex;
@@ -132,7 +132,7 @@
 .albums {
   margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
 }
 
@@ -154,7 +154,7 @@
 }
 
 .album img {
-  width: 100%;
+  width: 30%;
   border-radius: 14px;
   margin-bottom: 10px;
 }
