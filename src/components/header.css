@@ -1,0 +1,123 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  background: transparent;
+}
+
+/* LEFT */
+.greeting {
+  font-size: 28px;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+.greeting span {
+  color: hsl(var(--primary));
+}
+
+/* RIGHT */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* SEARCH */
+.search-box {
+  background: hsl(var(--card));
+  border-radius: 999px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.search-box svg {
+  color: hsl(var(--muted-foreground));
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 180px;
+  font-size: 14px;
+  color: hsl(var(--foreground));
+}
+
+.search-box input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+/* ICON BUTTON */
+.icon-btn {
+  position: relative;
+  background: hsl(var(--card));
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  color: hsl(var(--foreground));
+  transition: transform 0.2s ease;
+}
+
+.icon-btn:hover {
+  transform: scale(1.05);
+}
+
+/* RED DOT */
+.dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background: hsl(var(--primary));
+  border-radius: 50%;
+}
+
+/* PROFILE */
+.profile {
+  background: hsl(var(--card));
+  border-radius: 999px;
+  padding: 6px 12px 6px 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease;
+}
+
+.profile:hover {
+  transform: scale(1.02);
+}
+
+.profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile svg {
+  color: hsl(var(--muted-foreground));
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .greeting {
+    font-size: 22px;
+  }
+
+  .search-box {
+    display: none;
+  }
+}
